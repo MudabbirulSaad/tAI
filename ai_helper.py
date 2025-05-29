@@ -16,6 +16,7 @@ from textual.widgets import Input, Label, Static
 from textual.reactive import reactive
 from textual import on, work
 from textual.binding import Binding
+from textual.worker import Worker
 
 from google import genai
 from google.genai import types
@@ -25,13 +26,10 @@ import json
 # Load environment variables
 load_dotenv()
 
-
-
 class CommandResponse(BaseModel):
     """Structured output for command generation"""
     command: str
     explanation: Optional[str] = None
-    
 
 class AIHelperApp(App):
     """A Textual app that generates Linux commands using AI and pastes them to terminal."""
@@ -81,6 +79,17 @@ class AIHelperApp(App):
         min-height: 3;
     }
     
+    #output {
+        background: $surface-darken-2;
+        border: solid $warning;
+        padding: 1;
+        margin-top: 1;
+        color: $warning;
+        min-height: 3;
+        max-height: 10;
+        overflow-y: auto;
+    }
+    
     .hidden {
         display: none;
     }
@@ -89,12 +98,16 @@ class AIHelperApp(App):
     BINDINGS = [
         Binding("escape", "quit", "Exit", priority=True),
         Binding("ctrl+c", "quit", "Cancel", priority=True),
+        Binding("ctrl+e", "toggle_mode", "Toggle Execute/Copy Mode", priority=True),
     ]
 
     # Reactive variables
     status_text = reactive("Initializing...")
     current_command = reactive("")
+    command_output = reactive("")
     show_response = reactive(False)
+    show_output = reactive(False)
+    execute_mode = reactive(True)  # True = execute, False = copy to clipboard
 
     def __init__(self):
         super().__init__()
@@ -111,6 +124,7 @@ class AIHelperApp(App):
             ),
             Static(self.status_text, id="status"),
             Static("", id="response", classes="hidden"),
+            Static("", id="output", classes="hidden"),
             id="main_container"
         )
 
@@ -129,7 +143,8 @@ class AIHelperApp(App):
         try:
             self.client = genai.Client(api_key=api_key)
             self.model = "gemini-2.0-flash"
-            self.status_text = "Ready! Type your command request..."
+            mode = "EXECUTE" if self.execute_mode else "COPY"
+            self.status_text = f"Ready! Mode: {mode} (Ctrl+E to toggle) | Type your command request..."
         except Exception as e:
             self.status_text = f"Error initializing Gemini: {str(e)}"
 
@@ -138,7 +153,6 @@ class AIHelperApp(App):
         try:
             self.query_one("#status", Static).update(status)
         except:
-            # Ignore errors during initialization
             pass
 
     def watch_current_command(self, command: str) -> None:
@@ -153,8 +167,33 @@ class AIHelperApp(App):
                 response_widget.add_class("hidden")
                 self.show_response = False
         except:
-            # Ignore errors during initialization
             pass
+
+    def watch_command_output(self, output: str) -> None:
+        """Update output display when command_output changes."""
+        try:
+            output_widget = self.query_one("#output", Static)
+            if output:
+                output_widget.update(f"Output:\n{output}")
+                output_widget.remove_class("hidden")
+                self.show_output = True
+            else:
+                output_widget.add_class("hidden")
+                self.show_output = False
+        except:
+            pass
+
+    def watch_execute_mode(self, mode: bool) -> None:
+        """Update status when mode changes."""
+        if self.client:  # Only update if initialized
+            mode_text = "EXECUTE" if mode else "COPY"
+            self.status_text = f"Ready! Mode: {mode_text} (Ctrl+E to toggle) | Type your command request..."
+
+    def action_toggle_mode(self) -> None:
+        """Toggle between execute and copy modes."""
+        self.execute_mode = not self.execute_mode
+        # Clear previous outputs when switching modes
+        self.command_output = ""
 
     @on(Input.Submitted)
     def handle_submission(self, event: Input.Submitted) -> None:
@@ -167,8 +206,9 @@ class AIHelperApp(App):
             self.status_text = "❌ Gemini client not initialized"
             return
         
-        # Clear previous response and show loading
+        # Clear previous responses
         self.current_command = ""
+        self.command_output = ""
         self.status_text = "🔄 Generating command..."
         
         # Start AI processing
@@ -178,7 +218,6 @@ class AIHelperApp(App):
     async def generate_command(self, query: str) -> None:
         """Generate command using Gemini AI with structured output."""
         try:
-            # Create a detailed prompt for Linux command generation
             prompt = """You are a Linux command expert. Generate a single, executable Linux command for the following request:
 
 Requirements:
@@ -191,7 +230,7 @@ Requirements:
             class Command(BaseModel):
                 command: str
 
-            # Generate response
+            # Generate response using Edward's suggestion: extract JSON properly
             response = await asyncio.to_thread(
                 self.client.models.generate_content,
                 model=self.model,
@@ -203,43 +242,77 @@ Requirements:
                 contents=query,
             )
             
-            command = response.text
-            command_data = json.loads(command)
+            # Extract JSON response and convert to Python variables (Edward's approach)
+            command_json = response.text
+            command_data = json.loads(command_json)  # Using json.loads as Edward suggested
             command = command_data["command"]
             
             # Update the UI
             self.current_command = command
-            self.status_text = "✅ Command generated! Press Enter to paste to terminal, Esc to exit"
             
-            # Automatically paste to terminal
-            await self.paste_to_terminal(command)
+            if self.execute_mode:
+                self.status_text = "✅ Command generated! Executing..."
+                # Execute the command directly (Edward's suggestion)
+                await self.execute_command(command)
+            else:
+                self.status_text = "✅ Command generated and copied to clipboard!"
+                # Copy to clipboard
+                await self.copy_to_clipboard(command)
             
         except Exception as e:
             self.status_text = f"❌ Error: {str(e)}"
 
-    async def paste_to_terminal(self, command: str) -> None:
-        """Paste the generated command to the terminal."""
+    @work(thread=True)  # Using Edward's threaded worker approach
+    def execute_command(self, command: str) -> None:
+        """Execute command directly using subprocess (Edward's approach)."""
         try:
-            # Use xdotool to paste to the terminal
+            # Run the command as Edward suggested
+            result = subprocess.run(
+                command,
+                shell=True,
+                # capture_output=True,
+                text=True,
+                timeout=30  # Prevent hanging
+            )
+            
+            # Combine stdout and stderr
+            output = ""
+            if result.stdout:
+                output += result.stdout
+            if result.stderr:
+                output += f"\nErrors:\n{result.stderr}"
+            
+            if not output.strip():
+                output = f"Command executed successfully (exit code: {result.returncode})"
+            
+            # Update UI from worker thread
+            self.call_from_thread(self._update_after_execution, output, result.returncode)
+            
+        except subprocess.TimeoutExpired:
+            self.call_from_thread(self._update_after_execution, "Command timed out after 30 seconds", 1)
+        except Exception as e:
+            self.call_from_thread(self._update_after_execution, f"Error executing command: {str(e)}", 1)
+
+    def _update_after_execution(self, output: str, exit_code: int) -> None:
+        """Update UI after command execution."""
+        self.command_output = output
+        if exit_code == 0:
+            self.status_text = "✅ Command executed successfully! Press Esc to exit or continue..."
+        else:
+            self.status_text = f"⚠️ Command failed (exit code: {exit_code}). Press Esc to exit or continue..."
+
+    async def copy_to_clipboard(self, command: str) -> None:
+        """Copy command to clipboard."""
+        try:
             await asyncio.to_thread(
                 subprocess.run,
-                ["xdotool", "type", "--clearmodifiers", command],
+                ["xclip", "-selection", "clipboard"],
+                input=command.encode(),
                 check=True
             )
-            self.status_text = "✅ Command pasted! Continue typing or press Esc to exit"
+            self.status_text = "📋 Command copied to clipboard! Press Ctrl+Shift+V in terminal to paste"
         except subprocess.CalledProcessError:
-            # Fallback: copy to clipboard
-            try:
-                await asyncio.to_thread(
-                    subprocess.run,
-                    ["xclip", "-selection", "clipboard"],
-                    input=command.encode(),
-                    check=True
-                )
-                self.status_text = "📋 Command copied to clipboard (xdotool not available)"
-            except subprocess.CalledProcessError:
-                # Final fallback: just show the command
-                self.status_text = "⚠️ Could not paste. Command shown above - copy manually"
+            self.status_text = "⚠️ Could not copy to clipboard. Command shown above - copy manually"
 
     def action_quit(self) -> None:
         """Exit the application."""
@@ -247,7 +320,6 @@ Requirements:
 
 def main():
     """Main entry point."""
-    # Check for required dependencies
     try:
         from google import genai
         import dotenv
@@ -256,7 +328,6 @@ def main():
         print("Please install requirements: pip install -r requirements.txt")
         sys.exit(1)
     
-    # Check for API key
     load_dotenv()
     if not os.getenv("GEMINI_API_KEY"):
         print("Error: GEMINI_API_KEY not found in environment variables.")
@@ -264,7 +335,6 @@ def main():
         print("GEMINI_API_KEY=your_api_key_here")
         sys.exit(1)
     
-    # Run the app
     app = AIHelperApp()
     app.run(inline=True)
 
