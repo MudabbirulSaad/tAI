@@ -7,6 +7,7 @@ import os
 import sys
 import subprocess
 import asyncio
+import time
 from typing import Optional
 from pydantic import BaseModel
 
@@ -98,7 +99,7 @@ class AIHelperApp(App):
     BINDINGS = [
         Binding("escape", "quit", "Exit", priority=True),
         Binding("ctrl+c", "quit", "Cancel", priority=True),
-        Binding("ctrl+e", "toggle_mode", "Toggle Execute/Copy Mode", priority=True),
+        Binding("ctrl+e", "toggle_mode", "Toggle Execute/Paste Mode", priority=True),
     ]
 
     # Reactive variables
@@ -107,7 +108,8 @@ class AIHelperApp(App):
     command_output = reactive("")
     show_response = reactive(False)
     show_output = reactive(False)
-    execute_mode = reactive(True)  # True = execute, False = copy to clipboard
+    execute_mode = reactive(False)  # False = paste mode (default), True = execute mode
+    pending_paste_command = None  # Store command to paste after exit
 
     def __init__(self):
         super().__init__()
@@ -143,7 +145,7 @@ class AIHelperApp(App):
         try:
             self.client = genai.Client(api_key=api_key)
             self.model = "gemini-2.0-flash"
-            mode = "EXECUTE" if self.execute_mode else "COPY"
+            mode = "EXECUTE" if self.execute_mode else "PASTE"
             self.status_text = f"Ready! Mode: {mode} (Ctrl+E to toggle) | Type your command request..."
         except Exception as e:
             self.status_text = f"Error initializing Gemini: {str(e)}"
@@ -186,11 +188,11 @@ class AIHelperApp(App):
     def watch_execute_mode(self, mode: bool) -> None:
         """Update status when mode changes."""
         if self.client:  # Only update if initialized
-            mode_text = "EXECUTE" if mode else "COPY"
+            mode_text = "EXECUTE" if mode else "PASTE"
             self.status_text = f"Ready! Mode: {mode_text} (Ctrl+E to toggle) | Type your command request..."
 
     def action_toggle_mode(self) -> None:
-        """Toggle between execute and copy modes."""
+        """Toggle between execute and paste modes."""
         self.execute_mode = not self.execute_mode
         # Clear previous outputs when switching modes
         self.command_output = ""
@@ -255,9 +257,12 @@ Requirements:
                 # Execute the command directly (Edward's suggestion)
                 await self.execute_command(command)
             else:
-                self.status_text = "✅ Command generated and copied to clipboard!"
-                # Copy to clipboard
-                await self.copy_to_clipboard(command)
+                self.status_text = "✅ Command generated! Exiting and pasting to terminal..."
+                # Store command and exit to paste (your shell_script approach)
+                self.pending_paste_command = command
+                # Small delay to show the message
+                await asyncio.sleep(1)
+                self.exit(result=command)  # Exit with the command to paste
             
         except Exception as e:
             self.status_text = f"❌ Error: {str(e)}"
@@ -270,7 +275,7 @@ Requirements:
             result = subprocess.run(
                 command,
                 shell=True,
-                # capture_output=True,
+                capture_output=True,
                 text=True,
                 timeout=30  # Prevent hanging
             )
@@ -301,22 +306,31 @@ Requirements:
         else:
             self.status_text = f"⚠️ Command failed (exit code: {exit_code}). Press Esc to exit or continue..."
 
-    async def copy_to_clipboard(self, command: str) -> None:
-        """Copy command to clipboard."""
-        try:
-            await asyncio.to_thread(
-                subprocess.run,
-                ["xclip", "-selection", "clipboard"],
-                input=command.encode(),
-                check=True
-            )
-            self.status_text = "📋 Command copied to clipboard! Press Ctrl+Shift+V in terminal to paste"
-        except subprocess.CalledProcessError:
-            self.status_text = "⚠️ Could not copy to clipboard. Command shown above - copy manually"
-
     def action_quit(self) -> None:
         """Exit the application."""
         self.exit()
+
+def paste_command_to_terminal(command: str) -> None:
+    """Paste command to terminal using xdotool after TUI exits."""
+    try:
+        # print(f"Pasting command: {command}")
+        
+        # Small delay to ensure terminal has focus after TUI exits
+        time.sleep(0.5)
+        
+        # Use xdotool to type the command (similar to your shell_script.py)
+        subprocess.run([
+            "xdotool", "type", "--clearmodifiers", command
+        ], check=True)
+        
+        # print("✅ Command pasted successfully!")
+        
+    except subprocess.CalledProcessError as e:
+        print(f"❌ Error pasting command: {e}")
+        print(f"💡 Manual copy: {command}")
+    except FileNotFoundError:
+        print("❌ xdotool not found. Please install: sudo apt install xdotool")
+        print(f"💡 Manual copy: {command}")
 
 def main():
     """Main entry point."""
@@ -336,7 +350,11 @@ def main():
         sys.exit(1)
     
     app = AIHelperApp()
-    app.run(inline=True)
+    result = app.run(inline=True)
+    
+    # If we exited with a command to paste (paste mode)
+    if result is not None:
+        paste_command_to_terminal(result)
 
 if __name__ == "__main__":
     main() 
