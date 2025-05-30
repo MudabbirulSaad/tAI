@@ -1,0 +1,57 @@
+Screen {
+    background: transparent;
+}
+
+Container {
+    background: $surface;
+    border: thick $primary;
+    width: 80%;
+    height: auto;
+    margin: 1 2;
+    padding: 1;
+}
+
+#title {
+    text-align: center;
+    color: $primary;
+    text-style: bold;
+    margin-bottom: 1;
+}
+
+#input {
+    border: solid $accent;
+    background: $surface-lighten-1;
+    margin: 1 0;
+}
+
+#status {
+    color: $text-muted;
+    text-align: center;
+    margin-top: 1;
+    height: 1;
+}
+
+#response {
+    background: $surface-darken-1;
+    border: solid $success;
+    padding: 1;
+    margin-top: 1;
+    color: $success;
+    text-style: bold;
+    min-height: 3;
+}
+
+#output {
+    background: $surface-darken-2;
+    border: solid $warning;
+    padding: 1;
+    margin-top: 1;
+    color: $warning;
+    min-height: 3;
+    max-height: 10;
+    overflow-y: auto;
+}
+
+.hidden {
+    display: none;
+}
