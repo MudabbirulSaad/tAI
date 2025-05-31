@@ -1,13 +1,14 @@
 Screen {
-    background: transparent;
+    background: $surface;
+    align: center middle;
 }
 
 Container {
     background: $surface;
-    border: thick $primary;
+    
     width: 80%;
     height: auto;
-    margin: 1 2;
+    
     padding: 1;
 }
 
@@ -21,6 +22,7 @@ Container {
 #input {
     border: solid $accent;
     background: $surface-lighten-1;
+    text-wrap: wrap;
     margin: 1 0;
 }
 
