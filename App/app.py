@@ -7,7 +7,7 @@ from typing import Optional
 
 from textual.app import App, ComposeResult
 from textual.containers import Container, Vertical
-from textual.widgets import Input, Label, Static
+from textual.widgets import Input, Label, Static, Select
 from textual.reactive import reactive
 from textual import on, work
 from textual.binding import Binding
@@ -37,12 +37,18 @@ class TAI(App):
 
     def __init__(self):
         super().__init__()
-        self.llm = None
+        self.model = "gemini-2.0-flash"
+        self.llm_list = ["gemini-2.0-flash","gemini-2.0-flash-lite","gemini-2.5-flash-preview-05-20"]
 
     def compose(self) -> ComposeResult:
         """Create child widgets for the popup."""
         yield Container(
             Static("🤖 AI Command Helper", id="title"),
+            Select(
+                options=[(llm, llm) for llm in self.llm_list],
+                value=self.model,
+
+            ),
             Input(
                 placeholder="e.g., 'list all files larger than 100MB'",
                 id="input"
@@ -114,6 +120,11 @@ class TAI(App):
         # Clear previous outputs when switching modes
         self.command_output = ""
 
+    @on(Select.Changed)
+    def handle_llm_change(self, event: Select.Changed) -> None:
+        """Called when the LLM is changed."""
+        self.model = str(event.value)
+
     @on(Input.Submitted)
     def handle_submission(self, event: Input.Submitted) -> None:
         """Called when Enter is pressed in the Input."""
@@ -131,16 +142,17 @@ class TAI(App):
         self.status_text = "🔄 Generating command..."
         
         # Start AI processing
-        self.generate_command(query)
+        self.generate_command(self.model,query)
 
     @work(exclusive=True)
-    async def generate_command(self, query: str) -> None:
+    async def generate_command(self, model: str, query: str) -> None:
         """Generate command using Gemini AI with structured output."""
         try:
             
             # Generate response using Edward's suggestion: extract JSON properly
             command = await asyncio.to_thread(
                 self.llm.generate_command,
+                model,
                 query
             )
             

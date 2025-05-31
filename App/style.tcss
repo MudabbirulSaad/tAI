@@ -22,8 +22,11 @@ Container {
 #input {
     border: solid $accent;
     background: $surface-lighten-1;
-    text-wrap: wrap;
     margin: 1 0;
+}
+
+#select {
+    background: $surface-lighten-1;
 }
 
 #status {

@@ -12,14 +12,14 @@ load_dotenv()
 class llm():
     def __init__(self):
         self.client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
-        self.model = "gemini-2.0-flash"
+        # self.model = "gemini-2.0-flash"
 
     class Command(BaseModel):
         command: str
 
-    def generate_command(self, query: str) -> str:
+    def generate_command(self, model: str, query: str) -> str:
         response = self.client.models.generate_content(
-            model=self.model,
+            model=model,
             contents=query,
             config=types.GenerateContentConfig(
                 system_instruction=promptTemplate,
