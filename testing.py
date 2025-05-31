@@ -1,27 +1,19 @@
-from textual import on
-from textual.app import App, ComposeResult
-from textual.widgets import Header, Select
+import time
+from pynput.keyboard import Controller, Key
 
-LINES = """I must not fear.
-Fear is the mind-killer.
-Fear is the little-death that brings total obliteration.
-I will face my fear.
-I will permit it to pass over me and through me.""".splitlines()
-print(LINES)
-print((line, line) for line in LINES)
+# The command you want to type
+command = "Hello World"
 
-class SelectApp(App):
-    # CSS_PATH = "select.tcss"
+# Create a keyboard controller
+keyboard = Controller()
 
-    def compose(self) -> ComposeResult:
-        yield Header()
-        yield Select((line, line) for line in LINES)
+# Give yourself a few seconds to switch to the terminal window
+print("Switch to your terminal window in 3 seconds...")
+time.sleep(3)
 
-    @on(Select.Changed)
-    def select_changed(self, event: Select.Changed) -> None:
-        self.title = str(event.value)
-
-
-if __name__ == "__main__":
-    app = SelectApp()
-    app.run(inline=True)
+# Type the command
+for char in command:
+    keyboard.press(char)
+    keyboard.release(char)
+    # Add a small delay between key presses for realism (optional)
+    time.sleep(0.04)
