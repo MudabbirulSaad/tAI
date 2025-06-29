@@ -3,3 +3,4 @@ __pycache__/
 .env
 tai-package-builder/
 tai-package-builder.deb
+.cursor/
