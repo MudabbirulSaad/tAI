@@ -1,5 +1,5 @@
-from google import genai
-from google.genai import types
+from litellm import completion
+import litellm
 from dotenv import load_dotenv
 import json
 import os
@@ -8,26 +8,28 @@ from pydantic import BaseModel
 
 # Load environment variables
 load_dotenv()
+litellm.enable_json_schema_validation = True
 
-class llm():
+
+class llm:
     def __init__(self):
-        self.client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
-        # self.model = "gemini-2.0-flash"
+        # self.client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+        self.model = "gemini/gemini-2.0-flash"
 
     class Command(BaseModel):
         command: str
 
     def generate_command(self, model: str, query: str) -> str:
-        response = self.client.models.generate_content(
+        messages = [
+            {"role": "system", "content": promptTemplate},
+            {"role": "user", "content": query},
+        ]
+        response = completion(
             model=model,
-            contents=query,
-            config=types.GenerateContentConfig(
-                system_instruction=promptTemplate,
-                response_mime_type="application/json",
-                response_schema=self.Command,
-            ),
+            messages=messages,
+            api_key=os.getenv("GEMINI_API_KEY"),
+            response_format=self.Command,
         )
-        command_json = response.text
-        command_data = json.loads(command_json)
-        command = command_data["command"]
+        response_json = json.loads(response.model_dump()['choices'][0]['message']['content'])
+        command = response_json['command']
         return command

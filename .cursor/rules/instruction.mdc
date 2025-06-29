@@ -1,0 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+1. Follow clean coding strategy for python. Always have type checks in functions arguments
+2. Ignore the entire folder from `tai-package-builder`
