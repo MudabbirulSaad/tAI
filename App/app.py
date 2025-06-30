@@ -15,6 +15,7 @@ from textual.worker import Worker
 
 from LLM.LLM_Integration import llm
 from App.models import MODEL_DICT
+from Utils.config_manager import get_default_model
 from typing import List
 
 class TAI(App):
@@ -40,7 +41,7 @@ class TAI(App):
     def __init__(self):
         super().__init__()
         self.model_dict = MODEL_DICT
-        self.default_model_value = "openrouter/mistralai/devstral-small:free"
+        self.default_model_value = get_default_model()
         self.model = self.default_model_value
 
         # Find the key for the default model value to set as the initial Select value

@@ -6,6 +6,7 @@
 4. for now 4 seperate argument can be use openai, google, anthorpic, openrouter to setup the api key (done)
 5. Initially set the default llm to an free openrouter llm (done set to devstrall free)
 6. another cmd argument to set a defualt model so that model will be choose at the starting.
+7. Add TUI settings for api and default model configuration.
 7. Try to write a more better prompt
 8. Handle the argument passing from a deb installed program
 9. Handle proper exception handling (suppose the structure output is wrong, the api key is not there, the connection is closed or etc etc )
@@ -19,6 +20,13 @@
     - current path
     - previous few commands
     - previous response
+- TUI settings
+    - default model from the TUI
+    - API key setup from the TUI
+    - Prompt configuration from the TUI
+- Code refactoring
+    - All the config (model name and default model name should be in a single json)
+    - for argparser import should not happen (unnecessary) but only happen when using main
 
 
 # Thing to do (in depth) 
@@ -63,7 +71,7 @@
     - update the `self.llm_list` with that list
     - update the default llm (`self.model`) with the `openrouter/mistralai/devstral-small:free`
 
-2.1 **Updating the modelname:**
+2.1. **Updating the modelname:**
     - The current model name contains `provider/model_name` this is necessary for api calling but can be too verbose in the TUI.
     - update the modelname with only the model and drop the provider name in the tui while showing only the model name
     - but we still need to map to the original name (that we have given earlier) so that we can pass those value to the api
@@ -82,6 +90,13 @@
     - Now after getting the values update the values in the .env folder (maybe use a separate module to handle this)
     - In the main.py do not run the app if user is providing any of these arguments. rather update the dotenv and getout of the program
 
+4. **Setup Default Model Name:**
+    - In this step we need to setup a default model so that user can change the default model
+    - First default model will be a parameter (maybe in a config.json file) which will be loaded outside from the python script. Initial value will be the current value (devstral)
+    - Then similar way (the way we created api key configurability) we need to create an argparser for `default-model` and which will take the `default-model` value
+    - We also need another argparser `models` (thiw argparser won't take any values it is just a flag to show the available models) which will show all model name (with the provider name, the dictionary value of the models). 
+    - We need to handle error handling for `default-model`. First the given string value we check with the available models in the system. If the available models and the given default value is a match then we update the default model. But if the available models doesn't match with default model then we say the user this model is not available please check the available model name and format of the name and then give the entire available model name
+
 
 
 
@@ -92,3 +107,4 @@
 - [x] update the LLM provider list
 - [x] update the model name using key_value methodology (2.1)
 - [x] Create a module to handle api key updation from the command line
+- [x] Create a module to handle default model configuration and other steps define in `4` no points
