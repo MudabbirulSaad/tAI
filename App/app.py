@@ -14,7 +14,8 @@ from textual.binding import Binding
 from textual.worker import Worker
 
 from LLM.LLM_Integration import llm
-from App.models import MODEL_LIST
+from App.models import MODEL_DICT
+from typing import List
 
 class TAI(App):
 
@@ -38,17 +39,20 @@ class TAI(App):
 
     def __init__(self):
         super().__init__()
-        self.model = "openrouter/mistralai/devstral-small:free"
-        self.llm_list = MODEL_LIST
+        self.model_dict = MODEL_DICT
+        self.default_model_value = "openrouter/mistralai/devstral-small:free"
+        self.model = self.default_model_value
+
+        # Find the key for the default model value to set as the initial Select value
+        self.default_model_key = [k for k, v in self.model_dict.items() if v == self.default_model_value][0]
 
     def compose(self) -> ComposeResult:
         """Create child widgets for the popup."""
         yield Container(
             Static("🤖 AI Command Helper", id="title"),
             Select(
-                options=[(llm, llm) for llm in self.llm_list],
-                value=self.model,
-
+                options=[(name, name) for name in self.model_dict.keys()],
+                value=self.default_model_key,
             ),
             Input(
                 placeholder="e.g., 'list all files larger than 100MB'",
@@ -124,7 +128,7 @@ class TAI(App):
     @on(Select.Changed)
     def handle_llm_change(self, event: Select.Changed) -> None:
         """Called when the LLM is changed."""
-        self.model = str(event.value)
+        self.model = self.model_dict[str(event.value)]
 
     @on(Input.Submitted)
     def handle_submission(self, event: Input.Submitted) -> None:

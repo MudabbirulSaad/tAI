@@ -1,11 +1,11 @@
 # Overview of all the things that needed to be done
 
-1. Integrate litellm for llm api calling (also remove genai from the package list)
-2. Add multiple models such as OpenAI, Google, Anthorpic, Openrouter model, Openrouter free model
-3. Setup api key in the env file using argparser or something like that
-4. for now 4 seperate argument can be use openai, google, anthorpic, openrouter to setup the api key
-5. Initially set the default llm to an free openrouter llm
-6. another cmd argument to set a defualt model so that that model will be choose at the starting.
+1. Integrate litellm for llm api calling (also remove genai from the package list) (done)
+2. Add multiple models such as OpenAI, Google, Anthorpic, Openrouter model, Openrouter free model (done)
+3. Setup api key in the env file using argparser or something like that  (done)
+4. for now 4 seperate argument can be use openai, google, anthorpic, openrouter to setup the api key (done)
+5. Initially set the default llm to an free openrouter llm (done set to devstrall free)
+6. another cmd argument to set a defualt model so that model will be choose at the starting.
 7. Try to write a more better prompt
 8. Handle the argument passing from a deb installed program
 9. Handle proper exception handling (suppose the structure output is wrong, the api key is not there, the connection is closed or etc etc )
@@ -13,6 +13,12 @@
 11. If possible write a cicd yaml to automate the package publication on github
 12. Create a proper readme and push to github with proper instruction
 13. Finally if possible create a makefile so that anyone can compile from the source.
+
+-- Future Enhancement (later version)
+- Context adding to LLM
+    - current path
+    - previous few commands
+    - previous response
 
 
 # Thing to do (in depth) 
@@ -57,9 +63,32 @@
     - update the `self.llm_list` with that list
     - update the default llm (`self.model`) with the `openrouter/mistralai/devstral-small:free`
 
+2.1 **Updating the modelname:**
+    - The current model name contains `provider/model_name` this is necessary for api calling but can be too verbose in the TUI.
+    - update the modelname with only the model and drop the provider name in the tui while showing only the model name
+    - but we still need to map to the original name (that we have given earlier) so that we can pass those value to the api
+    - instead of creating a list, create a dictionary where key contain the model name that will be showing in the TUI and value contains the api model name
+    - we load the dictionary in the main.py and show all the key value
+    - when that key value is selected instead of taking the value as it is we get the value (dict value) using that key (event.value) and then set the model name to that value
+
+3. **Setup Api Key from cmd:**
+    - Right now the api key is hardcoded and provided by me. But user will want to provide their own API key.
+    - First we will take api key from the terminal or cmd argument (later will implement tui interface so that user can provide api key from their)
+    - take api key value from the argument.
+        - for gemini the argument will be `google`
+        - for openai the argument will be `openai`
+        - for anthropic the argument will be `anthorpic`
+        - for openrouter the argument will be `openrouter`
+    - Now after getting the values update the values in the .env folder (maybe use a separate module to handle this)
+    - In the main.py do not run the app if user is providing any of these arguments. rather update the dotenv and getout of the program
+
+
+
 
 
 # Task Progress
 
 - [x] litellm integration for universal LLM integration
 - [x] update the LLM provider list
+- [x] update the model name using key_value methodology (2.1)
+- [x] Create a module to handle api key updation from the command line
