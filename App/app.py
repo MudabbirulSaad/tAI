@@ -14,6 +14,7 @@ from textual.binding import Binding
 from textual.worker import Worker
 
 from LLM.LLM_Integration import llm
+from App.models import MODEL_LIST
 
 class TAI(App):
 
@@ -37,8 +38,8 @@ class TAI(App):
 
     def __init__(self):
         super().__init__()
-        self.model = "gemini-2.0-flash"
-        self.llm_list = ["gemini-2.0-flash","gemini-2.0-flash-lite","gemini-2.5-flash-preview-05-20"]
+        self.model = "openrouter/mistralai/devstral-small:free"
+        self.llm_list = MODEL_LIST
 
     def compose(self) -> ComposeResult:
         """Create child widgets for the popup."""
