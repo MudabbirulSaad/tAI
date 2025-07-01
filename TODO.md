@@ -5,15 +5,16 @@
 3. Setup api key in the env file using argparser or something like that  (done)
 4. for now 4 seperate argument can be use openai, google, anthorpic, openrouter to setup the api key (done)
 5. Initially set the default llm to an free openrouter llm (done set to devstrall free)
-6. another cmd argument to set a defualt model so that model will be choose at the starting.
+6. another cmd argument to set a defualt model so that model will be choose at the starting. (done)
 7. Add TUI settings for api and default model configuration.
-7. Try to write a more better prompt
-8. Handle the argument passing from a deb installed program
-9. Handle proper exception handling (suppose the structure output is wrong, the api key is not there, the connection is closed or etc etc )
-10. Create a bash script to automate the deb package building process
-11. If possible write a cicd yaml to automate the package publication on github
-12. Create a proper readme and push to github with proper instruction
-13. Finally if possible create a makefile so that anyone can compile from the source.
+8. Try to write a more better prompt (done)
+9. Custom prompt configuration from command line and from TUI
+10. Handle the argument passing from a deb installed program
+11. Handle proper exception handling (suppose the structure output is wrong, the api key is not there, the connection is closed or etc etc )
+12. Create a bash script to automate the deb package building process
+13. If possible write a cicd yaml to automate the package publication on github
+14. Create a proper readme and push to github with proper instruction
+15. Finally if possible create a makefile so that anyone can compile from the source.
 
 -- Future Enhancement (later version)
 - Context adding to LLM
@@ -97,6 +98,10 @@
     - We also need another argparser `models` (thiw argparser won't take any values it is just a flag to show the available models) which will show all model name (with the provider name, the dictionary value of the models). 
     - We need to handle error handling for `default-model`. First the given string value we check with the available models in the system. If the available models and the given default value is a match then we update the default model. But if the available models doesn't match with default model then we say the user this model is not available please check the available model name and format of the name and then give the entire available model name
 
+5. **Prompt Update**
+    - Updated the prompt
+    - Need more fixing specially need to fix (|) generation instead it generating (>)
+
 
 
 
@@ -108,3 +113,4 @@
 - [x] update the model name using key_value methodology (2.1)
 - [x] Create a module to handle api key updation from the command line
 - [x] Create a module to handle default model configuration and other steps define in `4` no points
+- [x] Prompt Updated

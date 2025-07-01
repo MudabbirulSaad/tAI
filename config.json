@@ -1,3 +1,3 @@
 {
-  "default_model": "openrouter/mistralai/devstral-small:free"
+  "default_model": "gemini/gemini-2.5-flash"
 }
