@@ -102,6 +102,27 @@
     - Updated the prompt
     - Need more fixing specially need to fix (|) generation instead it generating (>)
 
+6. **Adding Setting in the TUI**
+    - I've attached an image look into the image
+    - first add the setting button
+    - Then create a seperate page for setting. When clicked on the button the interface changes to that page
+    - There left we have nav type option (api key, default model, prompt config)
+    - By default the first tab is `default model` and that page will be shown in the settings page (first)
+        - that page will have a drop down menu similar to main page
+        - that drop down menu will have all the model same to main page
+        - below there will be a save button 
+        - when user select a model and press save it'll update the default value
+    - clicking `API key` in the navbar it'll go to the API key page
+        - there it'll also have drop down menu similar to above
+        - but the drop down value will be `Google`, `OpenAI`, `Anthropic` and `OpenRouter`
+        - below there will be a text box (input is hiden) where user will paste their api key
+        - below to that text box there will be save button which will save the api key (check how the `api_key_management.py` handles api saving and follow that)
+    - clicking `Prompt Config` in the navbar it'll go to the `Navbar` page
+        - there it'll have a big text field where user can write the prompt
+        - and save button below it to save or update the prompt
+        - for now skip the prompt saving logic just built the UI
+    - On top left of the setting page there will be a back button and clicking that button will take the screen to main page
+
 
 
 
@@ -114,3 +135,4 @@
 - [x] Create a module to handle api key updation from the command line
 - [x] Create a module to handle default model configuration and other steps define in `4` no points
 - [x] Prompt Updated
+- [x] Adding Setting page in the TUI

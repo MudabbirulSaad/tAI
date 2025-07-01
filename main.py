@@ -48,7 +48,8 @@ def main():
 
     automate = Automate()
     app = TAI()
-    result = app.run(inline=True)
+    # result = app.run(inline=True)
+    result = app.run()
     if result is not None:
         automate.paste_command_to_terminal(result)
 

@@ -3,13 +3,19 @@ Screen {
     align: center middle;
 }
 
-Container {
+#main_container {
     background: $surface;
-    
     width: 80%;
     height: auto;
-    
     padding: 1;
+    overflow-y: hidden;
+}
+
+/* Main Page Styles */
+#header {
+    layout: horizontal;
+    height: 3;
+    align: center middle;
 }
 
 #title {
@@ -17,6 +23,14 @@ Container {
     color: $primary;
     text-style: bold;
     margin-bottom: 1;
+    width: 1fr;
+}
+
+.settings-button {
+    dock: right;
+    width: 12; /* Increased width for text */
+    height: 3;
+    margin-left: 1;
 }
 
 #input {
@@ -25,8 +39,9 @@ Container {
     margin: 1 0;
 }
 
-#select {
+#model_select {
     background: $surface-lighten-1;
+    margin: 1 0;
 }
 
 #status {
@@ -55,6 +70,111 @@ Container {
     min-height: 3;
     max-height: 10;
     overflow-y: auto;
+}
+
+/* Settings Page Styles */
+#settings_container {
+    width: 80%;
+    height: 90%;
+    border: solid $accent;
+    background: $surface;
+}
+
+#settings_header {
+    layout: horizontal;
+    height: 3;
+    align: center middle;
+    background: $surface-darken-1;
+    padding: 0 1;
+}
+
+#back_btn {
+    dock: left;
+    width: 10;
+}
+
+#settings_title {
+    text-align: center;
+    color: $primary;
+    text-style: bold;
+    width: 1fr;
+}
+
+#settings_body {
+    layout: horizontal;
+    height: 1fr;
+}
+
+#settings_nav {
+    width: 25%;
+    background: $surface-darken-1;
+    padding: 1;
+    border-right: solid $accent;
+    overflow: auto;
+}
+
+.nav-button {
+    width: 100%;
+    margin-bottom: 1;
+    text-align: left;
+    background: $surface;
+}
+
+.nav-button.active {
+    background: $accent;
+    color: $text;
+    text-style: bold;
+}
+
+.nav-button:hover {
+    background: $surface-lighten-1;
+}
+
+#settings_content {
+    width: 75%;
+    padding: 2;
+    background: $surface;
+    overflow-y: auto;
+}
+
+#default_model_panel, #api_key_panel, #prompt_panel {
+    height: 100%;
+    overflow: auto;
+}
+
+#default_model_title, #api_key_title, #prompt_title {
+    color: $primary;
+    text-style: bold;
+    margin-bottom: 2;
+}
+
+#settings_model_select, #api_provider_select {
+    background: $surface-lighten-1;
+    margin-bottom: 2;
+}
+
+#api_key_input {
+    border: solid $accent;
+    background: $surface-lighten-1;
+    margin-bottom: 2;
+}
+
+#prompt_textarea {
+    border: solid $accent;
+    background: $surface-lighten-1;
+    height: 10;
+    margin-bottom: 2;
+}
+
+#save_default_model, #save_api_key, #save_prompt {
+    background: $success;
+    color: $surface;
+    text-style: bold;
+    width: 20%;
+}
+
+#save_default_model:hover, #save_api_key:hover, #save_prompt:hover {
+    background: $success-lighten-1;
 }
 
 .hidden {
