@@ -142,13 +142,13 @@ Screen {
     overflow-y: auto;
 }
 
-#default_model_title, #api_key_title, #prompt_title, #fullscreen_title, #openrouter_title {
+#default_model_title, #api_key_title, #prompt_title, #fullscreen_title, #openrouter_title, #free_openrouter_title {
     color: $primary;
     text-style: bold;
     margin-bottom: 2;
 }
 
-#settings_model_select, #api_provider_select, #fullscreen_select, #openrouter_select {
+#settings_model_select, #api_provider_select, #fullscreen_select, #openrouter_select, #free_openrouter_select {
     background: $surface-lighten-1;
     margin-bottom: 2;
 }

@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 
 load_dotenv(override=True)
 
-def get_api_key(model:str) -> str:
+def get_api_key(model:str, openrouter_all: bool) -> str:
 
         provider = model.split('/')[0]
 
@@ -29,11 +29,18 @@ def get_api_key(model:str) -> str:
                 raise Exception("ANTHROPIC_API_KEY is not set")
             
         elif provider == "openrouter":
-            api_key = os.getenv("OPENROUTER_API_KEY")
-            if api_key:
-                return api_key
+            if not openrouter_all:
+                api_key = os.getenv("OPENROUTER_FREE_API_KEY")
+                if api_key:
+                    return api_key
+                else:
+                    raise Exception("OPENROUTER_FREE_API_KEY is not found")
             else:
-                raise Exception("OPENROUTER_API_KEY is not set")
+                api_key = os.getenv("OPENROUTER_API_KEY")
+                if api_key:
+                    return api_key
+                else:
+                    raise Exception("OPENROUTER_API_KEY is not set")
             
         else:
             raise Exception("Invalid provider")

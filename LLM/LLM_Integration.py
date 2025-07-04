@@ -11,8 +11,9 @@ litellm.enable_json_schema_validation = True
 
 
 class llm:
-    def __init__(self, prompt: str):
+    def __init__(self, prompt: str, openrouter_all: bool):
         self.prompt = prompt
+        self.openrouter_all = openrouter_all
 
     class Command(BaseModel):
         command: str
@@ -22,7 +23,11 @@ class llm:
             {"role": "system", "content": self.prompt},
             {"role": "user", "content": query},
         ]
-        api_key = get_api_key(model)
+        if self.openrouter_all:
+            model = "openrouter/" + model
+            api_key = get_api_key(model, self.openrouter_all)
+        else:
+            api_key = get_api_key(model,False)
         response = completion(
             model=model,
             messages=messages,

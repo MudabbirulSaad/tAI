@@ -94,11 +94,13 @@ class SettingsScreen(Screen):
                             id="fullscreen_select"
                         ),
                         Static("Set openrouter for all models:", id="openrouter_title"),
+                        Static("(If set to 'Yes' then need to provide paid API key for openrouter, Default free openrouter API key won't work anymore)", id="openrouter_title_note"),
                         Select(
                             options=[("Yes", True), ("No", False)],
                             value=self.openrouter_all,
                             id="openrouter_select"
                         ),
+
                         Button("Save", id="save_others"),
                         id="others_panel",
                         classes="hidden"
@@ -190,13 +192,13 @@ class SettingsScreen(Screen):
     def save_other_settings(self):
         fullscreen = self.query_one("#fullscreen_select", Select).value
         openrouter_all = self.query_one("#openrouter_select", Select).value
-
         config_manager.set_set_full_screen(fullscreen)
         config_manager.set_set_openrouter_for_all(openrouter_all)
 
         self.app.fullscreen = fullscreen
-        self.app.openrouter_all = openrouter_all
+        self.app.openrouter_all = openrouter_all 
         
+    
         self.app.status_text = "✅ Settings saved (Please restart the app to apply the changes)"
 
 
@@ -218,7 +220,7 @@ class TAI(App):
     execute_mode = reactive(False)
     pending_paste_command = None
 
-    def __init__(self, models: dict, default_model: str, prompt: str, fullscreen: bool, openrouter_all: bool):
+    def __init__(self, models: dict, default_model: str, prompt: str, fullscreen: bool, openrouter_all: bool,):
         super().__init__()
         self.model_dict = models
         self.default_model_value = default_model
@@ -256,7 +258,7 @@ class TAI(App):
             self.default_model_key, 
             self.prompt,
             self.fullscreen,
-            self.openrouter_all
+            self.openrouter_all,
         ))
 
     @on(Button.Pressed, "#settings_btn")
@@ -269,7 +271,7 @@ class TAI(App):
 
     def setup_llm(self):
         try:
-            self.llm = llm(prompt=self.prompt)
+            self.llm = llm(prompt=self.prompt, openrouter_all=self.openrouter_all)
             mode = "EXECUTE" if self.execute_mode else "PASTE"
             self.status_text = f"Ready! Mode: {mode} (Ctrl+E to toggle) | Type your command request..."
         except Exception as e:

@@ -60,7 +60,7 @@ def main():
         default_model=default_model,
         prompt=prompt,
         fullscreen=fullscreen,
-        openrouter_all=openrouter_all
+        openrouter_all=openrouter_all,
     )
     result = app.run(inline=not fullscreen)
     if result is not None:
