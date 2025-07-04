@@ -22,7 +22,8 @@ class CalendarEvent(BaseModel):
 
 resp = completion(
     # model="openrouter/qwen/qwen3-32b-04-28:free",
-    model="gemini/gemini-2.0-flash",
+    # model="gemini/gemini-2.0-flash",
+    # model="openrouter/openai/gpt-4o-mini",
     messages=messages,
     response_format=CalendarEvent,
     api_key=os.getenv("GEMINI_API_KEY"),

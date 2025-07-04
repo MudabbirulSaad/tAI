@@ -28,6 +28,6 @@ def update_api_key(provider: str, api_key: str) -> None:
     variable_name = key_mapping.get(provider)
     if variable_name:
         set_key(dotenv_path, variable_name, api_key)
-        print(f"✅ Successfully updated {provider.capitalize()} API key.")
+        print(f"✅ Successfully updated {provider.capitalize()} API key. Please restart the application to apply the changes.")
     else:
         print(f"❌ Invalid provider specified: {provider}") 

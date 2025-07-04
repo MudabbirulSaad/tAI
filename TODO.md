@@ -22,9 +22,9 @@
     - previous few commands
     - previous response
 - TUI settings
-    - default model from the TUI
-    - API key setup from the TUI
-    - Prompt configuration from the TUI
+    - default model from the TUI (done)
+    - API key setup from the TUI (done)
+    - Prompt configuration from the TUI (pending)
 - Code refactoring
     - All the config (model name and default model name should be in a single json)
     - for argparser import should not happen (unnecessary) but only happen when using main
@@ -123,6 +123,18 @@
         - for now skip the prompt saving logic just built the UI
     - On top left of the setting page there will be a back button and clicking that button will take the screen to main page
 
+7. **Iclude all the configurable value inside the `config.json`**
+    - Right now we've 3 configurable values. One: `models.py`which contains the model dictionary, then `prompt.py` which contain the prompt for the LLM, 
+    3rd the `default_model` which is already inside the the `config.json`
+    - We need to transfer the `models.py` dictionary to `config.json` and then `prompt.py` prompt to the `config.json`
+    - After that we need to update the `config_manager` and load the config from there. Do not load the json file each time, rather load the json file once
+    and only pass the appropriate values using the function
+    - Instead of calling the the `config_manager` from the `app,py` rather import it from the `main.py` and pass them to the `TAI` class
+    - In the `config_manager` each of the configurable will have get and set function so that later it can be updated (for now ignore the set method for models).
+    - Update all the code where it was using the previous configuration (i.e: models dictionary, and prompt)
+    - pass the prompt directly to the `generated_command` class (which is calling inside from the app, and the TAI() class have already got the prompt from the instructor) so that we are not loading anything more than once.
+    - Also for future reference add 2 more configuration value inside `config.json` and those are `set_full_screen` which is default to false, and `set_openrouter_for_all` also default to false.
+
 
 
 
@@ -136,3 +148,10 @@
 - [x] Create a module to handle default model configuration and other steps define in `4` no points
 - [x] Prompt Updated
 - [x] Adding Setting page in the TUI
+- [] Update the configuration values handling which is describe detailed in `step 7`
+
+
+# Guardrails
+
+- **Do not make big changes**
+- **Make small changes and test it then move to next changes only after fixing it**

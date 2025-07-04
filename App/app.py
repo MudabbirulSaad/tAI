@@ -186,7 +186,7 @@ class TAI(App):
         yield Container(
             Container(
                 Static("🤖 AI Command Helper", id="title"),
-                Button("Settings", id="settings_btn", classes="settings-button"),
+                Button("🛠️ Settings", id="settings_btn", classes="settings-button"),
                 id="header"
             ),
             Select(
