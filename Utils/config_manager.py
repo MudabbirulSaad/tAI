@@ -3,24 +3,70 @@ This module handles reading and writing configuration from config.json.
 """
 import json
 import os
+from typing import Dict, Any
 
-CONFIG_FILE = "config.json"
+class ConfigManager:
+    """
+    This class handles reading and writing configuration from config.json.
+    It loads the configuration once and provides methods to access and modify it.
+    """
+    def __init__(self, config_file: str = "config.json"):
+        self.config_file = config_file
+        self.config = self._load_config()
 
-def get_config() -> dict:
-    """Reads the configuration from config.json."""
-    if os.path.exists(CONFIG_FILE):
-        with open(CONFIG_FILE, "r") as f:
-            return json.load(f)
-    return {}
+    def _load_config(self) -> Dict[str, Any]:
+        """Loads the configuration from the JSON file."""
+        if os.path.exists(self.config_file):
+            with open(self.config_file, "r") as f:
+                try:
+                    return json.load(f)
+                except json.JSONDecodeError:
+                    return {}
+        return {}
 
-def get_default_model() -> str:
-    """Gets the default model from the configuration."""
-    config = get_config()
-    return config.get("default_model", "openrouter/mistralai/devstral-small:free")
+    def _save_config(self):
+        """Saves the current configuration to the JSON file."""
+        with open(self.config_file, "w") as f:
+            json.dump(self.config, f, indent=2)
 
-def set_default_model(model_id: str) -> None:
-    """Sets the default model in the configuration."""
-    config = get_config()
-    config["default_model"] = model_id
-    with open(CONFIG_FILE, "w") as f:
-        json.dump(config, f, indent=2) 
+    def get_default_model(self) -> str:
+        """Gets the default model from the configuration."""
+        return self.config.get("default_model", "openrouter/mistralai/devstral-small:free")
+
+    def set_default_model(self, model_id: str):
+        """Sets the default model in the configuration."""
+        self.config["default_model"] = model_id
+        self._save_config()
+
+    def get_models(self) -> Dict[str, str]:
+        """Gets the available models from the configuration."""
+        return self.config.get("models", {})
+
+    def get_prompt(self) -> str:
+        """Gets the prompt from the configuration."""
+        return self.config.get("prompt", "")
+
+    def set_prompt(self, prompt: str):
+        """Sets the prompt in the configuration."""
+        self.config["prompt"] = prompt
+        self._save_config()
+
+    def get_set_full_screen(self) -> bool:
+        """Gets the full screen setting from the configuration."""
+        return self.config.get("set_full_screen", False)
+
+    def set_set_full_screen(self, full_screen: bool):
+        """Sets the full screen setting in the configuration."""
+        self.config["set_full_screen"] = full_screen
+        self._save_config()
+
+    def get_set_openrouter_for_all(self) -> bool:
+        """Gets the openrouter for all setting from the configuration."""
+        return self.config.get("set_openrouter_for_all", False)
+
+    def set_set_openrouter_for_all(self, openrouter_for_all: bool):
+        """Sets the openrouter for all setting in the configuration."""
+        self.config["set_openrouter_for_all"] = openrouter_for_all
+        self._save_config()
+
+config_manager = ConfigManager() 

@@ -15,18 +15,20 @@ from textual.worker import Worker
 from textual.screen import Screen
 
 from LLM.LLM_Integration import llm
-from App.models import MODEL_DICT
-from Utils.config_manager import get_default_model, set_default_model
+from Utils.config_manager import config_manager
 from Utils.api_key_manager import update_api_key
 
 
 class SettingsScreen(Screen):
     """The settings screen."""
 
-    def __init__(self, model_dict: dict, default_model_key: str) -> None:
+    def __init__(self, model_dict: dict, default_model_key: str, prompt: str, fullscreen: bool, openrouter_all: bool) -> None:
         super().__init__()
         self.model_dict = model_dict
         self.default_model_key = default_model_key
+        self.prompt = prompt
+        self.fullscreen = fullscreen
+        self.openrouter_all = openrouter_all
         self.settings_tab = "default_model"
 
     def compose(self) -> ComposeResult:
@@ -41,6 +43,7 @@ class SettingsScreen(Screen):
                     Button("Default Model", id="nav_default_model", classes="nav-button active"),
                     Button("API Key Setup", id="nav_api_key", classes="nav-button"),
                     Button("Prompt Config", id="nav_prompt", classes="nav-button"),
+                    Button("Others", id="nav_others", classes="nav-button"),
                     id="settings_nav"
                 ),
                 Container(
@@ -77,9 +80,27 @@ class SettingsScreen(Screen):
                     ),
                     Container(
                         Static("Prompt Config", id="prompt_title"),
-                        TextArea("This is a new prompt", id="prompt_textarea"),
+                        TextArea(self.prompt, id="prompt_textarea"),
                         Button("Save", id="save_prompt"),
                         id="prompt_panel",
+                        classes="hidden"
+                    ),
+                    Container(
+                        # Static("", id="others_title"),
+                        Static("Full screen mode:", id="fullscreen_title"),
+                        Select(
+                            options=[("Yes", True), ("No", False)],
+                            value=self.fullscreen,
+                            id="fullscreen_select"
+                        ),
+                        Static("Set openrouter for all models:", id="openrouter_title"),
+                        Select(
+                            options=[("Yes", True), ("No", False)],
+                            value=self.openrouter_all,
+                            id="openrouter_select"
+                        ),
+                        Button("Save", id="save_others"),
+                        id="others_panel",
                         classes="hidden"
                     ),
                     id="settings_content"
@@ -101,18 +122,23 @@ class SettingsScreen(Screen):
         elif event.button.id == "nav_prompt":
             self.settings_tab = "prompt"
             self.switch_tab()
+        elif event.button.id == "nav_others":
+            self.settings_tab = "others"
+            self.switch_tab()
         elif event.button.id == "save_default_model":
             self.save_default_model()
         elif event.button.id == "save_api_key":
             self.save_api_key()
         elif event.button.id == "save_prompt":
             self.save_prompt()
+        elif event.button.id == "save_others":
+            self.save_other_settings()
             
     def switch_tab(self):
         for btn in self.query("#settings_nav Button"):
             btn.remove_class("active")
         
-        for panel_id in ["#default_model_panel", "#api_key_panel", "#prompt_panel"]:
+        for panel_id in ["#default_model_panel", "#api_key_panel", "#prompt_panel", "#others_panel"]:
             self.query_one(panel_id).add_class("hidden")
         
         if self.settings_tab == "default_model":
@@ -124,13 +150,16 @@ class SettingsScreen(Screen):
         elif self.settings_tab == "prompt":
             self.query_one("#nav_prompt").add_class("active")
             self.query_one("#prompt_panel").remove_class("hidden")
+        elif self.settings_tab == "others":
+            self.query_one("#nav_others").add_class("active")
+            self.query_one("#others_panel").remove_class("hidden")
 
     def save_default_model(self):
         select_widget = self.query_one("#settings_model_select", Select)
         selected_model_name = str(select_widget.value)
         model_id = self.model_dict[selected_model_name]
         
-        set_default_model(model_id)
+        config_manager.set_default_model(model_id)
         
         main_app = self.app
         main_app.default_model_value = model_id
@@ -149,12 +178,26 @@ class SettingsScreen(Screen):
         
         update_api_key(provider, api_key)
         api_key_input.value = ""
-        self.app.status_text = f"✅ {provider.capitalize()} API key saved successfully"
+        self.app.status_text = f"✅ {provider.capitalize()} API key saved successfully (Please restart the app to apply the changes)"
 
     def save_prompt(self):
         prompt_text = self.query_one("#prompt_textarea", TextArea).text
-        # TODO: Implement prompt saving logic
-        self.app.status_text = f"✅ Prompt configuration saved (placeholder)"
+        config_manager.set_prompt(prompt_text)
+        self.app.prompt = prompt_text
+        self.app.setup_llm()
+        self.app.status_text = f"✅ Prompt configuration saved"
+
+    def save_other_settings(self):
+        fullscreen = self.query_one("#fullscreen_select", Select).value
+        openrouter_all = self.query_one("#openrouter_select", Select).value
+
+        config_manager.set_set_full_screen(fullscreen)
+        config_manager.set_set_openrouter_for_all(openrouter_all)
+
+        self.app.fullscreen = fullscreen
+        self.app.openrouter_all = openrouter_all
+        
+        self.app.status_text = "✅ Settings saved (Please restart the app to apply the changes)"
 
 
 class TAI(App):
@@ -175,11 +218,14 @@ class TAI(App):
     execute_mode = reactive(False)
     pending_paste_command = None
 
-    def __init__(self):
+    def __init__(self, models: dict, default_model: str, prompt: str, fullscreen: bool, openrouter_all: bool):
         super().__init__()
-        self.model_dict = MODEL_DICT
-        self.default_model_value = get_default_model()
+        self.model_dict = models
+        self.default_model_value = default_model
         self.model = self.default_model_value
+        self.prompt = prompt
+        self.fullscreen = fullscreen
+        self.openrouter_all = openrouter_all
         self.default_model_key = [k for k, v in self.model_dict.items() if v == self.default_model_value][0]
 
     def compose(self) -> ComposeResult:
@@ -205,7 +251,13 @@ class TAI(App):
         )
         
     def action_show_settings(self) -> None:
-        self.push_screen(SettingsScreen(self.model_dict, self.default_model_key))
+        self.push_screen(SettingsScreen(
+            self.model_dict, 
+            self.default_model_key, 
+            self.prompt,
+            self.fullscreen,
+            self.openrouter_all
+        ))
 
     @on(Button.Pressed, "#settings_btn")
     def handle_settings_button(self) -> None:
@@ -217,7 +269,7 @@ class TAI(App):
 
     def setup_llm(self):
         try:
-            self.llm = llm()
+            self.llm = llm(prompt=self.prompt)
             mode = "EXECUTE" if self.execute_mode else "PASTE"
             self.status_text = f"Ready! Mode: {mode} (Ctrl+E to toggle) | Type your command request..."
         except Exception as e:

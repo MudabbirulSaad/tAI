@@ -135,6 +135,17 @@
     - pass the prompt directly to the `generated_command` class (which is calling inside from the app, and the TAI() class have already got the prompt from the instructor) so that we are not loading anything more than once.
     - Also for future reference add 2 more configuration value inside `config.json` and those are `set_full_screen` which is default to false, and `set_openrouter_for_all` also default to false.
 
+8. **Show the current prompt in the TUI:**
+    - we're already loading the prompt from the config.json file
+    - while navigating to setting and going to prompt config we need to show the current prompt that is being used in the textbox
+
+9. **Add `Others` in the settings tab:**
+    - we need a new section (after the current 3) named others in the settings
+    - that will show two radio button inside the page
+    - First one `Full screen mode` and below the text there is option picker (similar to `Api key` section but the text is above and the picker is below the text and there is no text input). and the option picker have `Yes` option and `No` Option
+    - Second one `Openrouter for all models` and similar there is an option picker for that (similar to `Api key` section but the text is above and the picker is below the text and there is no text input) and the option picker have `Yes` option and `No` option.
+    - Also update the value inside the `main.py` where it is running the `result = app.run()` to `result = app.run(inline=fullscreen)` this will tell textual to be in full screen or not.
+
 
 
 
@@ -148,7 +159,9 @@
 - [x] Create a module to handle default model configuration and other steps define in `4` no points
 - [x] Prompt Updated
 - [x] Adding Setting page in the TUI
-- [] Update the configuration values handling which is describe detailed in `step 7`
+- [x] Update the configuration values handling which is describe detailed in `step 7`
+- [x] Show the current prompt in the prompt config of the settings.
+- [x] Add `Others` settings tab in the `settings` page (follow the details in the `step 9`)
 
 
 # Guardrails

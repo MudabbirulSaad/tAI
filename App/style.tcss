@@ -137,18 +137,18 @@ Screen {
     overflow-y: auto;
 }
 
-#default_model_panel, #api_key_panel, #prompt_panel {
+#default_model_panel, #api_key_panel, #prompt_panel, #others_panel{
     height: 100%;
-    overflow: auto;
+    overflow-y: auto;
 }
 
-#default_model_title, #api_key_title, #prompt_title {
+#default_model_title, #api_key_title, #prompt_title, #fullscreen_title, #openrouter_title {
     color: $primary;
     text-style: bold;
     margin-bottom: 2;
 }
 
-#settings_model_select, #api_provider_select {
+#settings_model_select, #api_provider_select, #fullscreen_select, #openrouter_select {
     background: $surface-lighten-1;
     margin-bottom: 2;
 }
@@ -166,14 +166,14 @@ Screen {
     margin-bottom: 2;
 }
 
-#save_default_model, #save_api_key, #save_prompt {
+#save_default_model, #save_api_key, #save_prompt, #save_others {
     background: $success;
     color: $surface;
     text-style: bold;
     width: 20%;
 }
 
-#save_default_model:hover, #save_api_key:hover, #save_prompt:hover {
+#save_default_model:hover, #save_api_key:hover, #save_prompt:hover, #save_others:hover {
     background: $success-lighten-1;
 }
 

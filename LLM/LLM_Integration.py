@@ -3,7 +3,6 @@ import litellm
 from dotenv import load_dotenv
 import json
 import os
-from LLM.prompt import promptTemplate
 from pydantic import BaseModel
 from Utils.API import get_api_key
 # Load environment variables
@@ -12,15 +11,15 @@ litellm.enable_json_schema_validation = True
 
 
 class llm:
-    def __init__(self):
-        pass
+    def __init__(self, prompt: str):
+        self.prompt = prompt
 
     class Command(BaseModel):
         command: str
     
     def generate_command(self, model: str, query: str) -> str:
         messages = [
-            {"role": "system", "content": promptTemplate},
+            {"role": "system", "content": self.prompt},
             {"role": "user", "content": query},
         ]
         api_key = get_api_key(model)

@@ -2,8 +2,7 @@ import argparse
 from App.app import TAI
 from KeyAutomation import Automate
 from Utils.api_key_manager import update_api_key
-from Utils.config_manager import set_default_model
-from App.models import MODEL_DICT
+from Utils.config_manager import config_manager
 
 def main():
     parser = argparse.ArgumentParser(description="🤖 AI Command Helper", formatter_class=argparse.RawTextHelpFormatter)
@@ -15,15 +14,17 @@ def main():
     parser.add_argument("--models", action="store_true", help="List all available models")
     args = parser.parse_args()
 
+    models = config_manager.get_models()
+
     if args.models:
         print("Available models:")
-        for name, identifier in MODEL_DICT.items():
+        for name, identifier in models.items():
             print(f"- {name}: {identifier}")
         return
 
     if args.default_model:
-        if args.default_model in MODEL_DICT.values():
-            set_default_model(args.default_model)
+        if args.default_model in models.values():
+            config_manager.set_default_model(args.default_model)
             print(f"✅ Default model set to: {args.default_model}")
         else:
             print(f"❌ Error: Model '{args.default_model}' not found.")
@@ -47,9 +48,21 @@ def main():
         return
 
     automate = Automate()
-    app = TAI()
-    # result = app.run(inline=True)
-    result = app.run()
+    
+    # Get all configs
+    default_model = config_manager.get_default_model()
+    prompt = config_manager.get_prompt()
+    fullscreen = config_manager.get_set_full_screen()
+    openrouter_all = config_manager.get_set_openrouter_for_all()
+
+    app = TAI(
+        models=models,
+        default_model=default_model,
+        prompt=prompt,
+        fullscreen=fullscreen,
+        openrouter_all=openrouter_all
+    )
+    result = app.run(inline=not fullscreen)
     if result is not None:
         automate.paste_command_to_terminal(result)
 
