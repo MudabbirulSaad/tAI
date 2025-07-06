@@ -4,7 +4,7 @@
   <img src="https://cdn-uploads.huggingface.co/production/uploads/65ca6f0098a46a56261ac3ac/zbckPsek5KfmLBD-tZ4WY.png"/>
 </p>
 
-**tAI** is a minimal integration of AI inside CLI. No it's neither a `chatting application` and nor a clone of `claude code` or `gemini cli`. **The goal is to have a minimal AI assistant for quick reference of terminal commands.** The project was inspired from the **cursor** AI popup inside the terminal. I wanted to build something similar but outside of cursor where based on natural language it'll generate the command and paste it inside the terminal. No need for fance `wrap` or other CLI tools. This tool will only generate command based on the natural language and paste it inside the terminal without sharing anything from the terminal.
+**tAI** is a minimal integration of AI inside CLI. No it's neither a `chatting application` and nor a clone of `claude code` or `gemini cli`. **The goal is to have a minimal AI assistant for quick reference of terminal commands.** The project was inspired from the **cursor** AI popup inside the terminal. I wanted to build something similar but outside of cursor where based on natural language it'll generate the command and paste it inside the terminal. No need for fancy `wrap` or other CLI tools. This tool will only generate command based on the natural language and paste it inside the terminal without sharing anything from the terminal.
 
 ## Special Thanks
 - **[Textual](https://textual.textualize.io/):** For the amazing TUI framework.
@@ -104,7 +104,7 @@ tai
 
 #### Default Model
 
-Change the default model for the application itself.
+Change the default model from the application itself.
 
 ![](https://cdn-uploads.huggingface.co/production/uploads/65ca6f0098a46a56261ac3ac/TWMb8O5VtXTlJozmpQK3m.png)
 
