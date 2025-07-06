@@ -135,7 +135,7 @@ Customize the prompt for your personal usage.
 
 ## Free OpenRouter API Key
 
-- **Access to free models**: You have access to free models from `OpenRouter` API via free openrouter API key which I've exposed so that you can get a test out the application (don't worry, it's a free API key so I won't be getting broked).
+- **Access to free models**: You have access to free models from `OpenRouter` API via free openrouter API key which I intentionally exposed in the `.env`. The reason was to give you a test of the application instantly without worring about setting up the key (Don't worry, it's a free API key so I won't be getting broke).
 - **Limited Usage**: Since this is a free API key therefore it's usage is going to be very very limited because of the rate limits and single API key for every user (variable based on the model) and the performance is going to be very slow.
 
 ## Free API Keys (alternative)
