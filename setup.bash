@@ -41,7 +41,7 @@ rsync -av --progress . "$BUILD_DIR/usr/local/lib/$PACKAGE_NAME/" \
 
 # 4. Create a virtual environment inside the package structure
 echo "--- Creating virtual environment ---"
-python3 -m venv "$BUILD_DIR/usr/local/lib/$PACKAGE_NAME/venv"
+python3 -m venv --copies "$BUILD_DIR/usr/local/lib/$PACKAGE_NAME/venv"
 
 # 5. Install dependencies from requirements.txt into the venv
 echo "--- Installing dependencies ---"
