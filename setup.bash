@@ -47,7 +47,11 @@ python3 -m venv "$BUILD_DIR/usr/local/lib/$PACKAGE_NAME/venv"
 echo "--- Installing dependencies ---"
 "$BUILD_DIR/usr/local/lib/$PACKAGE_NAME/venv/bin/python3" -m pip install -r "$BUILD_DIR/usr/local/lib/$PACKAGE_NAME/requirements.txt"
 
-# 6. Create the launcher script
+# 6. Make venv binaries executable
+echo "--- Setting execute permissions for venv ---"
+chmod -R +x "$BUILD_DIR/usr/local/lib/$PACKAGE_NAME/venv/bin/"
+
+# 7. Create the launcher script
 echo "--- Creating launcher script ---"
 cat <<EOF > "$BUILD_DIR/usr/local/bin/$PACKAGE_NAME"
 #!/bin/sh
@@ -57,11 +61,11 @@ cat <<EOF > "$BUILD_DIR/usr/local/bin/$PACKAGE_NAME"
 exec /usr/local/lib/$PACKAGE_NAME/venv/bin/python3 /usr/local/lib/$PACKAGE_NAME/main.py "\$@"
 EOF
 
-# 7. Make the launcher script executable
+# 8. Make the launcher script executable
 echo "--- Making launcher executable ---"
 chmod +x "$BUILD_DIR/usr/local/bin/$PACKAGE_NAME"
 
-# 8. Create the control file for the Debian package
+# 9. Create the control file for the Debian package
 echo "--- Creating control file ---"
 cat <<EOF > "$BUILD_DIR/DEBIAN/control"
 Package: $PACKAGE_NAME
@@ -72,7 +76,7 @@ Description: tai is a tool that helps you to find the right command.
 Depends: python3, python3-venv
 EOF
 
-# 9. Create post-installation script to set permissions
+# 10. Create post-installation script to set permissions
 echo "--- Creating postinst script ---"
 cat <<EOF > "$BUILD_DIR/DEBIAN/postinst"
 #!/bin/sh
@@ -82,18 +86,18 @@ chmod -R 777 /usr/local/lib/$PACKAGE_NAME/ || true
 exit 0
 EOF
 
-# 10. Make the postinst script executable
+# 11. Make the postinst script executable
 echo "--- Making postinst executable ---"
 chmod +x "$BUILD_DIR/DEBIAN/postinst"
 
-# 11. Build the Debian package
+# 12. Build the Debian package
 echo "--- Building Debian package ---"
 dpkg-deb --build --root-owner-group "$BUILD_DIR"
 
 # Rename the package to a more standard format
-mv "${BUILD_DIR}.deb" "${PACKAGE_NAME}_${VERSION}.deb"
+mv "${BUILD_DIR}.deb" "${PACKAGE_NAME}_${VERSION}_all.deb"
 
 echo "--- Cleaning up build directory ---"
 rm -rf "$BUILD_DIR"
 
-echo "--- Build complete! Package created: ${PACKAGE_NAME}_${VERSION}.deb ---" 
+echo "--- Build complete! Package created: ${PACKAGE_NAME}_${VERSION}_all.deb ---" 
