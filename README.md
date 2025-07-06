@@ -29,9 +29,9 @@
 ### Fullscreen mode
 ![](https://cdn-uploads.huggingface.co/production/uploads/65ca6f0098a46a56261ac3ac/FoJOmIhm0BBaw0ro46c9q.png)
 
-### Video demo
+### Working demo
 
-![](https://private-user-images.githubusercontent.com/59968346/462934040-1d6e32ec-2a0b-4933-9788-cd94a4ac7628.mp4?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NTE4MTU3NTAsIm5iZiI6MTc1MTgxNTQ1MCwicGF0aCI6Ii81OTk2ODM0Ni80NjI5MzQwNDAtMWQ2ZTMyZWMtMmEwYi00OTMzLTk3ODgtY2Q5NGE0YWM3NjI4Lm1wND9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNTA3MDYlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjUwNzA2VDE1MjQxMFomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTgyNDY3MDA3NTcyMDlkOGYzZjEyODhhMGUzNDczYjdhMzliMGNjZGI5MDgxMjdjMDQwMzQ3YTQyOGFmMDMyNmQmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.AAo2GTUA_Ppr_0FnhAVbTHL58JvhkSsyua39wiYIyaY)
+![](https://cdn-uploads.huggingface.co/production/uploads/65ca6f0098a46a56261ac3ac/PbyNcHXKVSgX7y3uKOJnZ.gif)
 
 ## Installation
 
@@ -42,7 +42,7 @@
 
 ### Instal Directly
 
-1. **Download the `tai_1.0.0.deb` file** from the [**releases**](https://github.com/KillerShoaib/tAI/releases/download/v0.0.1/tai_0.0.1.deb)
+1. **Download the `tai_1.0.0.deb` file** from the [**releases**](https://github.com/KillerShoaib/tAI/releases/download/v1.0.0/tai_1.0.0.deb)
 
 2. **Install `.deb` file**:
 
