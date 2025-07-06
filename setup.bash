@@ -11,7 +11,7 @@ echo "--- Starting build for $PACKAGE_NAME version $VERSION ---"
 # 1. Clean up previous build artifacts
 echo "--- Cleaning up previous builds ---"
 rm -rf "$BUILD_DIR"
-rm -f "${PACKAGE_NAME}_${VERSION}_all.deb"
+rm -f "${PACKAGE_NAME}_${VERSION}.deb"
 rm -f "${BUILD_DIR}.deb"
 
 # Ensure a .env file exists so it can be bundled
@@ -33,9 +33,10 @@ rsync -av --progress . "$BUILD_DIR/usr/local/lib/$PACKAGE_NAME/" \
     --exclude "venv" \
     --exclude "*package-builder" \
     --exclude ".idea" \
-    --exclude "__pycache__" \
+    --exclude "__pycache__/" \
     --exclude "*.pyc" \
-    --exclude "setup.bash"
+    --exclude "setup.bash" \
+    --exclude "install.bash"
 
 # 4. Create a virtual environment inside the package structure
 echo "--- Creating virtual environment ---"
@@ -89,9 +90,9 @@ echo "--- Building Debian package ---"
 dpkg-deb --build --root-owner-group "$BUILD_DIR"
 
 # Rename the package to a more standard format
-mv "${BUILD_DIR}.deb" "${PACKAGE_NAME}_${VERSION}_all.deb"
+mv "${BUILD_DIR}.deb" "${PACKAGE_NAME}_${VERSION}.deb"
 
 echo "--- Cleaning up build directory ---"
 rm -rf "$BUILD_DIR"
 
-echo "--- Build complete! Package created: ${PACKAGE_NAME}_${VERSION}_all.deb ---" 
+echo "--- Build complete! Package created: ${PACKAGE_NAME}_${VERSION}.deb ---" 
