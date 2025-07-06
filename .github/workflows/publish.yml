@@ -39,5 +39,7 @@ jobs:
 
             **Included in this release:**
             - `tai_${{ env.VERSION }}.deb`
+          # Automatically mark tags with -beta, -alpha, or -rc as pre-releases
+          prerelease: ${{ contains(github.ref, '-beta') || contains(github.ref, '-alpha') || contains(github.ref, '-rc') }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
