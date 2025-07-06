@@ -95,9 +95,9 @@ echo "--- Building Debian package ---"
 dpkg-deb --build --root-owner-group "$BUILD_DIR"
 
 # Rename the package to a more standard format
-mv "${BUILD_DIR}.deb" "${PACKAGE_NAME}_${VERSION}_all.deb"
+mv "${BUILD_DIR}.deb" "${PACKAGE_NAME}_${VERSION}.deb"
 
 echo "--- Cleaning up build directory ---"
 rm -rf "$BUILD_DIR"
 
-echo "--- Build complete! Package created: ${PACKAGE_NAME}_${VERSION}_all.deb ---" 
+echo "--- Build complete! Package created: ${PACKAGE_NAME}_${VERSION}.deb ---" 
