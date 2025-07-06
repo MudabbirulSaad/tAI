@@ -12,6 +12,7 @@ def main():
     parser.add_argument("--openrouter", type=str, help="Set the OpenRouter API key")
     parser.add_argument("--default-model", type=str, help="Set the default model for the application")
     parser.add_argument("--models", action="store_true", help="List all available models")
+    parser.add_argument("--fullscreen", type=str.lower, choices=['true', 'false'], help="Set the fullscreen mode (true or false)")
     args = parser.parse_args()
 
     models = config_manager.get_models()
@@ -29,6 +30,12 @@ def main():
         else:
             print(f"❌ Error: Model '{args.default_model}' not found.")
             print("Please use the --models flag to see the list of available models.")
+        return
+
+    if args.fullscreen is not None:
+        fullscreen_value = args.fullscreen == 'true'
+        config_manager.set_set_full_screen(fullscreen_value)
+        print(f"✅ Fullscreen mode set to: {fullscreen_value}")
         return
         
     api_keys_to_update = {

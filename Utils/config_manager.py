@@ -11,7 +11,8 @@ class ConfigManager:
     It loads the configuration once and provides methods to access and modify it.
     """
     def __init__(self, config_file: str = "config.json"):
-        self.config_file = config_file
+        APP_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        self.config_file = os.path.join(APP_ROOT, config_file)
         self.config = self._load_config()
 
     def _load_config(self) -> Dict[str, Any]:

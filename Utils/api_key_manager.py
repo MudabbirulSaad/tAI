@@ -1,23 +1,22 @@
 """
 This module handles updating API keys in the .env file.
 """
-from dotenv import set_key, find_dotenv
+from dotenv import set_key
+import os
+
+# Determine the absolute path to the .env file based on the script's location.
+# This ensures we always use the .env file bundled with the application.
+APP_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DOTENV_PATH = os.path.join(APP_ROOT, ".env")
 
 def update_api_key(provider: str, api_key: str) -> None:
     """
-    Updates the API key for a given provider in the .env file.
+    Updates the API key for a given provider in the bundled .env file.
 
     Args:
         provider (str): The name of the provider (e.g., 'google', 'openai').
         api_key (str): The API key to set.
     """
-    dotenv_path = find_dotenv()
-    if not dotenv_path:
-        # Create .env file if it doesn't exist
-        with open(".env", "w") as f:
-            pass
-        dotenv_path = find_dotenv()
-
     key_mapping = {
         "google": "GEMINI_API_KEY",
         "openai": "OPENAI_API_KEY",
@@ -27,7 +26,12 @@ def update_api_key(provider: str, api_key: str) -> None:
     
     variable_name = key_mapping.get(provider)
     if variable_name:
-        set_key(dotenv_path, variable_name, api_key)
-        print(f"✅ Successfully updated {provider.capitalize()} API key. Please restart the application to apply the changes.")
+        # Check if the .env file exists before trying to write to it.
+        # The build script ensures it's created.
+        if os.path.exists(DOTENV_PATH):
+            set_key(DOTENV_PATH, variable_name, api_key)
+            print(f"✅ Successfully updated {provider.capitalize()} API key.")
+        else:
+            print(f"❌ Error: .env file not found at {DOTENV_PATH}. Please reinstall the package.")
     else:
         print(f"❌ Invalid provider specified: {provider}") 
