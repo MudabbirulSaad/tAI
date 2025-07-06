@@ -36,7 +36,8 @@ rsync -av --progress . "$BUILD_DIR/usr/local/lib/$PACKAGE_NAME/" \
     --exclude "__pycache__/" \
     --exclude "*.pyc" \
     --exclude "setup.bash" \
-    --exclude "install.bash"
+    --exclude "install.bash" \
+    --exclude "TODO.md"
 
 # 4. Create a virtual environment inside the package structure
 echo "--- Creating virtual environment ---"
