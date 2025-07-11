@@ -9,7 +9,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 VERSION = "1.0.0"
 
 setup(
-    name="tai",
+    name="tai-textual",
     version=VERSION,
     author="Shoaib",
     author_email="shoaib8@gmail.com>",

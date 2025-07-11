@@ -7,3 +7,4 @@ TODO.md
 build/
 dist/
 *.egg-info/
+pypi_token.txt
