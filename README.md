@@ -42,38 +42,74 @@
 ### Prerequisites
 
 - **Python 3.12** or higher
-- **Linux Debian** based distribution (i.e: `Ubuntu`)
-
-### Instal Directly
-
-1. **Download the `tai_1.0.0.deb` file** from the [**releases**](https://github.com/KillerShoaib/tAI/releases/download/v1.0.0/tai_1.0.0.deb)
-
-2. **Install `.deb` file**:
-
-   ```bash
-   sudo apt install ./tai_1.0.0.deb
-   ```
 
 
-### Installation from source
+There are multiple ways to install `tAI`. Choose the one that best suits your needs.
 
-1. **Clone the repository**
+### 1. Using pipx (Recommended)
 
-   ```bash
-   git clone https://github.com/KillerShoaib/tAI.git
-   ```
+This method installs `tAI` in an isolated environment, making it available globally without interfering with other Python packages.
 
-2. **Go to project directory**:
-   ```bash
-   cd tAI
-   ```
+```bash
+pipx install tai-textual
+```
 
-3. **Run the `install.bash`**:
-   ```bash
-   bash install.bash
-   ```
+After installation, you can run the application directly:
+```bash
+tai
+```
 
-That's it! It'll build the `.deb` file and install the file. It may ask for password before installtion.
+> **Note:**
+> If you don't have `pipx` installed, you can install it using your system's package manager (e.g., `sudo apt install pipx` on Debian/Ubuntu) or with `pip`:
+> ```bash
+> python3 -m pip install --user pipx
+> python3 -m pipx ensurepath
+> ```
+
+### 2. Using pip in a Virtual Environment
+
+This method is ideal for keeping dependencies for different projects separate.
+
+1.  **Create and activate a virtual environment**:
+    ```bash
+    python3 -m venv venv
+    source tai-venv/bin/activate
+    ```
+
+2.  **Install the package**:
+    ```bash
+    pip install tai-textual
+    ```
+
+3.  **Run the application**:
+    ```bash
+    tai
+    ```
+
+### 3. From Source
+
+If you want to have the latest development version, you can install it directly from the source code.
+
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/KillerShoaib/tAI.git
+    cd tAI
+    ```
+
+2.  **Create and activate a virtual environment**:
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate
+    ```
+
+3.  **Install dependencies**:
+    ```bash
+    pip install -r requirements.txt
+    ```
+4.  **Run as a module**:
+    ```bash
+    python -m tAI
+    ```
 
 ## Usage
 
@@ -182,13 +218,11 @@ Add the above code to your `.bashrc` file and then run `source ~/.bashrc` to app
 - [x] Command line arguments
 - [x] Bash integration with keybinding
 - [x] Free openrouter API key
-- [x] Deb package installation
-- [x] CICD pipeline
+- [x] PyPI package installatio
+- [x] CICD pipelinen
+- [x] Support for Windows, MacOS and other Linux distributions
 - [ ] Integration of Context (current path, previous commands, previous response)
-- [ ] Support for Windows, MacOS and other Linux distributions
-- [ ] PyPI package installation
 - [ ] Docker image (or container)
-- [ ] apt repository
 
 ## Contributing
 
