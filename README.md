@@ -208,6 +208,13 @@ bind -x '"\C-k": ai_helper'
 
 Add the above code to your `.bashrc` file and then run `source ~/.bashrc` to apply the changes.
 
+## Changelog
+
+### Version 1.0.1
+- **Fixed**: Updated the model name for `devstral` from `openrouter/mistralai/devstral-small:free` to `openrouter/mistralai/devstral-small-2505:free` to align with OpenRouter's changes.
+
+### Version 1.0.0
+- Initial release of `tAI`.
 
 ## TODO List
 

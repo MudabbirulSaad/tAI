@@ -20,7 +20,10 @@ class llm:
             {"role": "user", "content": query},
         ]
         if self.openrouter_all:
-            model = "openrouter/" + model
+
+            # only changing when there is no openrouter before
+            if not (model.startswith("openrouter/")):
+                model = "openrouter/" + model
             api_key = get_api_key(model, self.openrouter_all)
         else:
             api_key = get_api_key(model,False)

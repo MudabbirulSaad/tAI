@@ -21,9 +21,9 @@ class ConfigManager:
             with open(self.config_file, "r") as f:
                 try:
                     return json.load(f)
-                except json.JSONDecodeError:
-                    return {}
-        return {}
+                except json.JSONDecodeError as e:
+                    raise Exception(f"Error loading config.json: {e}")
+        raise Exception(f"config.json not found in {self.config_file}")
 
     def _save_config(self):
         """Saves the current configuration to the JSON file."""

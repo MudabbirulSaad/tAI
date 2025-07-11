@@ -1,6 +1,6 @@
 {
-  "default_model": "openrouter/mistralai/devstral-small:free",
-  "set_full_screen": false,
+  "default_model": "openrouter/mistralai/devstral-small-2505:free",
+  "set_full_screen": true,
   "set_openrouter_for_all": false,
   "models": {
     "Gemini 2.0 Flash": "gemini/gemini-2.0-flash",
@@ -20,7 +20,7 @@
     "Qwen3 32B (Free)": "openrouter/qwen/qwen3-32b:free",
     "Mistral Small 3.1 Instruct (Free)": "openrouter/mistralai/mistral-small-3.1-24b-instruct:free",
     "Mistral Small 3.2 Instruct (Free)": "openrouter/mistralai/mistral-small-3.2-24b-instruct:free",
-    "Devstral Small (Free)": "openrouter/mistralai/devstral-small:free",
+    "Devstral Small (Free)": "openrouter/mistralai/devstral-small-2505:free",
     "Qwen3 14B (Free)": "openrouter/qwen/qwen3-14b:free",
     "Qwen3 8B (Free)": "openrouter/qwen/qwen3-8b:free",
     "Gemma-3 27B IT (Free)": "openrouter/google/gemma-3-27b-it:free"

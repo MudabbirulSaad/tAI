@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 # Package version
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 
 setup(
     name="tai-textual",
@@ -121,7 +121,7 @@ setup(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
-        "Development Status :: 4 - Beta",
+        "Development Status :: 5 - Production/Stable",
         "Environment :: Console",
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Libraries :: Python Modules",
