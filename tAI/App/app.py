@@ -14,9 +14,9 @@ from textual.binding import Binding
 from textual.worker import Worker
 from textual.screen import Screen
 
-from ..LLM.LLM_Integration import llm
-from ..Utils.config_manager import config_manager
-from ..Utils.api_key_manager import update_api_key
+from tAI.LLM.LLM_Integration import llm
+from tAI.Utils.config_manager import config_manager
+from tAI.Utils.api_key_manager import update_api_key
 
 
 class SettingsScreen(Screen):

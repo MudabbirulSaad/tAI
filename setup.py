@@ -22,7 +22,7 @@ setup(
     long_description_content_type="text/markdown",
     packages=find_packages(),
     package_data={
-        "tAI": ["config.json", ".env","App/style.tcss"],
+        "tAI": ["config.json", ".env","secret.key","App/style.tcss"],
     },
     install_requires=requirements,
     entry_points={

@@ -1,12 +1,8 @@
 from litellm import completion
 import litellm
-from dotenv import load_dotenv
 import json
-import os
 from pydantic import BaseModel
-from ..Utils.API import get_api_key
-# Load environment variables
-load_dotenv(override=True)
+from tAI.Utils.API import get_api_key
 litellm.enable_json_schema_validation = True
 
 

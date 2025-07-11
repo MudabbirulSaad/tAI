@@ -1,8 +1,8 @@
 import argparse
-from .App.app import TAI
-from .KeyAutomation import Automate
-from .Utils.api_key_manager import update_api_key
-from .Utils.config_manager import config_manager
+from tAI.App.app import TAI
+from tAI.KeyAutomation import Automate
+from tAI.Utils.api_key_manager import update_api_key
+from tAI.Utils.config_manager import config_manager
 
 def tAI():
     parser = argparse.ArgumentParser(description="🤖 AI Command Helper", formatter_class=argparse.RawTextHelpFormatter)
