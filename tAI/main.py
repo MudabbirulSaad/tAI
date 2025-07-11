@@ -1,10 +1,10 @@
 import argparse
-from App.app import TAI
-from KeyAutomation import Automate
-from Utils.api_key_manager import update_api_key
-from Utils.config_manager import config_manager
+from .App.app import TAI
+from .KeyAutomation import Automate
+from .Utils.api_key_manager import update_api_key
+from .Utils.config_manager import config_manager
 
-def main():
+def tAI():
     parser = argparse.ArgumentParser(description="🤖 AI Command Helper", formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("--google", type=str, help="Set the Google Gemini API key")
     parser.add_argument("--openai", type=str, help="Set the OpenAI API key")
@@ -74,4 +74,4 @@ def main():
         automate.paste_command_to_terminal(result)
 
 if __name__ == "__main__":
-    main()
+    tAI()

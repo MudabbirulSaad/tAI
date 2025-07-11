@@ -1,5 +1,5 @@
 {
-  "default_model": "openrouter/mistralai/devstral-small:free",
+  "default_model": "gemini/gemini-2.0-flash",
   "set_full_screen": false,
   "set_openrouter_for_all": false,
   "models": {

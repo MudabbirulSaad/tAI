@@ -16,15 +16,18 @@ setup(
     name="tai",
     version=VERSION,
     author="Shoaib",
-    author_email="shoaib@gmail.com>",
+    author_email="shoaib8@gmail.com>",
     description="tAI is a tool that helps you to find the right command.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages(),
+    package_data={
+        "tAI": ["config.json", ".env","App/style.tcss"],
+    },
     install_requires=requirements,
     entry_points={
         "console_scripts": [
-            "tai=main:main",
+            "tai=tAI:tAI",
         ],
     },
     classifiers=[

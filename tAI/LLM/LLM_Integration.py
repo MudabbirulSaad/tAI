@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import json
 import os
 from pydantic import BaseModel
-from Utils.API import get_api_key
+from ..Utils.API import get_api_key
 # Load environment variables
 load_dotenv(override=True)
 litellm.enable_json_schema_validation = True

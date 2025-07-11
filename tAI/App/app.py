@@ -14,9 +14,9 @@ from textual.binding import Binding
 from textual.worker import Worker
 from textual.screen import Screen
 
-from LLM.LLM_Integration import llm
-from Utils.config_manager import config_manager
-from Utils.api_key_manager import update_api_key
+from ..LLM.LLM_Integration import llm
+from ..Utils.config_manager import config_manager
+from ..Utils.api_key_manager import update_api_key
 
 
 class SettingsScreen(Screen):
@@ -203,7 +203,8 @@ class SettingsScreen(Screen):
 
 
 class TAI(App):
-    CSS_PATH = "style.tcss"
+    APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+    CSS_PATH = os.path.join(APP_ROOT, "style.tcss")
 
     BINDINGS = [
         Binding("escape", "quit", "Exit", priority=True),
