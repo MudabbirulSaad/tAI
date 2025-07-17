@@ -66,7 +66,16 @@ tai
 > python3 -m pipx ensurepath
 > ```
 
-### 2. Using pip in a Virtual Environment
+### 2. Using pip in a global environment (Not recommended)
+
+This method installs `tAI` in the global environment, making it available to all users on the system.
+
+```bash
+pip install tai-textual
+```
+> This is **not recommended** and may cause dependecy conflict.
+
+### 3. Using pip in a Virtual Environment
 
 This method is ideal for keeping dependencies for different projects separate.
 
@@ -86,7 +95,34 @@ This method is ideal for keeping dependencies for different projects separate.
     tai
     ```
 
-### 3. From Source
+But this is going to be annoyning cause you need to activate the virtual environment everytime you want to use the application. **There's a neat trick which you can use so that you don't have to activate the virtual environment everytime you want to use `tAI`. You can create a bash function and call the function directly from the terminal**. That function will automatically handle the virtual environment activation. After you've installed the `tAI` package in the virtual env then just copy paste this bash function inside your `.bashrc` file (or `.zshrc` if you're using `zsh`). You'll find this file in the `home` directory (remember this is a hidden file).
+
+
+```bash
+tai() {
+    # Path to the virtual environment's activate script
+    VENV_ACTIVATE="/path_where_you_have_created_the_virtual_env/venv/bin/activate"
+
+    # Check if the activate script exists
+    if [ -f "$VENV_ACTIVATE" ]; then
+        # Activate the virtual environment
+        source "$VENV_ACTIVATE"
+
+        # Run the 'tai' command
+        # The actual 'tai' executable should be in the venv's bin directory
+        command tai
+
+        # Deactivate the virtual environment upon completion
+        deactivate
+    else
+        echo "Error: tAI virtual environment not found at $VENV_ACTIVATE"
+    fi
+}
+```
+
+After pasting this function inside your `.bashrc` file, you need to change the `VENV_ACTIVATE` path to the path where you've created the virtual environment. Then, restart the terminal or run `source ~/.bashrc` to apply the changes. Now you're all set! Just type `tai` in your terminal to use `tAI`.
+
+### 4. From Source
 
 If you want to have the latest development version, you can install it directly from the source code.
 
@@ -209,6 +245,9 @@ bind -x '"\C-k": ai_helper'
 Add the above code to your `.bashrc` file and then run `source ~/.bashrc` to apply the changes.
 
 ## Changelog
+
+### Version 1.0.2
+- **Added New Free Model**: Added the latest opensource model `Kimi K2` to the list of free models.
 
 ### Version 1.0.1
 - **Fixed**: Updated the model name for `devstral` from `openrouter/mistralai/devstral-small:free` to `openrouter/mistralai/devstral-small-2505:free` to align with OpenRouter's changes.
