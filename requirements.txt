@@ -12,7 +12,6 @@ click==8.2.1
 cryptography==45.0.5
 distro==1.9.0
 docutils==0.21.2
-evdev==1.9.2
 filelock==3.18.0
 frozenlist==1.7.0
 fsspec==2025.5.1
@@ -58,7 +57,6 @@ pydantic_core==2.33.2
 Pygments==2.19.1
 pynput==1.8.1
 python-dotenv==1.1.0
-python-xlib==0.33
 PyYAML==6.0.2
 readme_renderer==44.0
 referencing==0.36.2

@@ -1,5 +1,6 @@
 from setuptools import setup, find_packages
 import os
+import sys
 
 # Read the contents of your README file
 with open("README.md", "r", encoding="utf-8") as fh:
@@ -7,6 +8,12 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 # Package version
 VERSION = "1.0.2"
+
+# Platform-specific dependencies
+linux_requires = [
+    "evdev==1.9.2",
+    "python-xlib==0.33",
+] if sys.platform.startswith('linux') else []
 
 setup(
     name="tai-textual",
@@ -20,7 +27,7 @@ setup(
     package_data={
         "tAI": ["config.json", ".env","secret.key","App/style.tcss"],
     },
-    install_requires=[
+    install_requires=linux_requires + [
         "aiohappyeyeballs==2.6.1",
         "aiohttp==3.12.13",
         "aiosignal==1.3.2",
@@ -35,7 +42,7 @@ setup(
         "cryptography==45.0.5",
         "distro==1.9.0",
         "docutils==0.21.2",
-        "evdev==1.9.2",
+
         "filelock==3.18.0",
         "frozenlist==1.7.0",
         "fsspec==2025.5.1",
